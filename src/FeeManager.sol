@@ -10,6 +10,8 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
     uint256 public constant FEE_DENOMINATOR = 10000;
     uint256 public fee; // Fee in basis points (e.g., 250 = 2.5%)
 
+    error InvalidFee();
+
     constructor() {
         _disableInitializers();
     }
@@ -25,6 +27,7 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
     function setFee(uint256 _fee) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_fee > FEE_DENOMINATOR) revert InvalidFee();
         fee = _fee;
     }
 
