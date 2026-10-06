@@ -1,66 +1,60 @@
-## Foundry
+# DEX Project
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A decentralized exchange implemented in Solidity using
+a constant-product AMM (x * y = k).
 
-Foundry consists of:
+## Features
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+- ERC20 token swaps
+- Constant-product AMM
+- Liquidity pools
+- Swap fees
+- Slippage protection
+- Deadline protection
+- Upgradeable FeeManager (UUPS)
+- Role-based access control
+- Foundry tests
+- GitHub Actions CI
 
-## Documentation
+## Architecture
 
-https://book.getfoundry.sh/
+User
+  |
+  v
+Swap
+  |
+  +----> Pool
+  |
+  +----> FeeManager
 
-## Usage
+## AMM
 
-### Build
+x * y = k
 
-```shell
-$ forge build
-```
+amountOut =
+amountIn * reserveOut /
+(reserveIn + amountIn)
 
-### Test
+## Contracts
 
-```shell
-$ forge test
-```
+| Contract | Purpose |
+|---|---|
+| Swap | Executes swaps |
+| FeeManager | Calculates protocol fees |
+| ISwap | Shared swap structures/interfaces |
 
-### Format
+## Security
 
-```shell
-$ forge fmt
-```
+- Slippage protection
+- Deadline validation
+- AccessControl
+- Reentrancy protection
+- Fee bounds
 
-### Gas Snapshots
+## Testing
 
-```shell
-$ forge snapshot
-```
+forge test -vvv
 
-### Anvil
+## Build
 
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+forge build
