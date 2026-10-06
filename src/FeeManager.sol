@@ -10,8 +10,11 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
     uint256 public constant FEE_DENOMINATOR = 10000;
     uint256 public fee; // Fee in basis points (e.g., 250 = 2.5%)
 
-    function initialize(uint256 _fee) external initializer {
+    constructor() {
         _disableInitializers();
+    }
+
+    function initialize(uint256 _fee) external initializer {
         __AccessControl_init();
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
