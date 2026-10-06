@@ -23,7 +23,6 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
         fee = _fee;
     }
 
-
     function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
     function setFee(uint256 _fee) external onlyRole(DEFAULT_ADMIN_ROLE) {
