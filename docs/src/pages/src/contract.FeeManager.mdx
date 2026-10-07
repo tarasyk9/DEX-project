@@ -1,0 +1,168 @@
+---
+title: "FeeManager"
+description: "Manages and calculates swap fees for the DEX"
+---
+
+# FeeManager
+
+[Git Source](https://github.com/tarasyk9/DEX-project/blob/65533ada8ce86eea939855b5e7715733e43cbc6f/src/FeeManager.sol)
+
+**Inherits:** Initializable, AccessControlUpgradeable, UUPSUpgradeable
+
+**Title:** Fee Manager
+
+Manages and calculates swap fees for the DEX
+
+<i>
+
+Uses UUPS upgradeability and OpenZeppelin role-based access control
+
+</i>
+
+## Constants
+
+### FEE_DENOMINATOR
+
+Denominator used for basis point calculations
+
+<i>
+
+10,000 represents 100%, therefore 100 represents 1%
+
+</i>
+
+```solidity
+uint256 public constant FEE_DENOMINATOR = 10_000;
+```
+
+## State Variables
+
+### fee
+
+Current swap fee expressed in basis points
+
+```solidity
+uint256 public fee;
+```
+
+## Functions
+
+<a id="constructor"></a>
+
+### constructor
+
+Disables initialization of the implementation contract
+
+```solidity
+constructor();
+```
+
+<a id="initialize-uint256"></a>
+
+### initialize
+
+Initializes the FeeManager contract through the proxy
+
+<i>
+
+Grants the DEFAULT_ADMIN_ROLE to the address performing initialization
+
+</i>
+
+```solidity
+function initialize(uint256 _fee) external initializer;
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _fee | `uint256` | Initial swap fee expressed in basis points |
+
+<a id="_authorizeupgrade-address"></a>
+
+### _authorizeUpgrade
+
+Authorizes an upgrade to a new implementation contract
+
+<i>
+
+Required by the UUPS upgrade pattern.
+
+</i>
+
+```solidity
+function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| newImplementation | `address` | Address of the new implementation contract |
+
+<a id="setfee-uint256"></a>
+
+### setFee
+
+Updates the swap fee
+
+```solidity
+function setFee(uint256 _fee) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _fee | `uint256` | New swap fee expressed in basis points |
+
+<a id="getfee-iswap-swapparams"></a>
+
+### getFee
+
+Calculates the absolute fee amount for a swap
+
+```solidity
+function getFee(ISwap.SwapParams memory swapParams) external view returns (uint256 feeAmount);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| swapParams | `ISwap.SwapParams` | Swap parameters containing the input amount and current pool reserves |
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| feeAmount | `uint256` | Fee amount denominated in the output token |
+
+## Events
+
+### FeeUpdated
+
+Emitted when the swap fee is updated
+
+```solidity
+event FeeUpdated(uint256 oldFee, uint256 newFee);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| oldFee | `uint256` | Previous fee in basis points |
+| newFee | `uint256` | New fee in basis points |
+
+## Errors
+
+### FeeGreaterThanDenominator
+
+Thrown when a fee greater than 100% is provided
+
+```solidity
+error FeeGreaterThanDenominator();
+```
+

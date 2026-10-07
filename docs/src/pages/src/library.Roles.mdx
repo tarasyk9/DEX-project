@@ -1,0 +1,39 @@
+---
+title: "Roles"
+description: "Defines role identifiers used for access control across the DEX contracts"
+---
+
+# Roles
+
+[Git Source](https://github.com/tarasyk9/DEX-project/blob/65533ada8ce86eea939855b5e7715733e43cbc6f/src/Roles.sol)
+
+**Title:** Roles
+
+Defines role identifiers used for access control across the DEX contracts
+
+## Constants
+
+### ADMIN_ROLE
+
+Role assigned to protocol administrators
+
+```solidity
+bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+```
+
+### MULTISIG_ADMIN_ROLE
+
+Role assigned to multisig administrators
+
+```solidity
+bytes32 public constant MULTISIG_ADMIN_ROLE = keccak256("MULTISIG_ADMIN_ROLE");
+```
+
+### ALLOWED_EIP712_SWAP_ROLE
+
+Role assigned to addresses allowed to execute EIP-712 swaps
+
+```solidity
+bytes32 public constant ALLOWED_EIP712_SWAP_ROLE = keccak256("ALLOWED_EIP712_SWAP_ROLE");
+```
+

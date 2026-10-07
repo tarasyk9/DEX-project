@@ -1,0 +1,385 @@
+---
+title: "VaultMultisig"
+---
+
+# VaultMultisig
+
+[Git Source](https://github.com/tarasyk9/DEX-project/blob/65533ada8ce86eea939855b5e7715733e43cbc6f/src/VaultMultisig.sol)
+
+## State Variables
+
+### quorum
+
+The number of signers required to execute a transaction
+
+```solidity
+uint256 public quorum;
+```
+
+### transfersCount
+
+The number of transfers executed
+
+```solidity
+uint256 public transfersCount;
+```
+
+### transfers
+
+The mapping of transfer IDs to transfer details
+
+```solidity
+mapping(uint256 => Transfer) private transfers;
+```
+
+### multisigSigners
+
+The mapping for verification that address is a signer
+
+```solidity
+mapping(address => bool) private multisigSigners;
+```
+
+## Functions
+
+<a id="onlymultisigsigner"></a>
+
+### onlyMultisigSigner
+
+```solidity
+modifier onlyMultisigSigner();
+```
+
+<a id="constructor-address-uint256"></a>
+
+### constructor
+
+Initializes the multisig contract
+
+```solidity
+constructor(address[] memory _signers, uint256 _quorum);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _signers | `address[]` | The array of signers |
+| _quorum | `uint256` | The number of signers required to execute a transaction |
+
+<a id="initiatetransfer-address-uint256"></a>
+
+### initiateTransfer
+
+Initiates a transfer
+
+```solidity
+function initiateTransfer(address _to, uint256 _amount) external onlyMultisigSigner;
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _to | `address` | The address of the recipient |
+| _amount | `uint256` | The amount of tokens to transfer |
+
+<a id="approvetransfer-uint256"></a>
+
+### approveTransfer
+
+Approves a transfer
+
+```solidity
+function approveTransfer(uint256 _transferId) external onlyMultisigSigner;
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _transferId | `uint256` | The ID of the transfer |
+
+<a id="executetransfer-uint256"></a>
+
+### executeTransfer
+
+```solidity
+function executeTransfer(uint256 _transferId) external onlyMultisigSigner;
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _transferId | `uint256` |  |
+
+<a id="receive"></a>
+
+### receive
+
+Default fallback function for receiving ETH
+
+```solidity
+receive() external payable;
+```
+
+<a id="gettransfer-uint256"></a>
+
+### getTransfer
+
+Gets the details of a transfer
+
+```solidity
+function getTransfer(uint256 _transferId)
+        external
+        view
+        returns (address to, uint256 amount, uint256 approvals, bool executed);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _transferId | `uint256` | The ID of the transfer |
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| to | `address` | The address of the recipient |
+| amount | `uint256` | The amount of tokens to transfer |
+| approvals | `uint256` | The number of approvals required to execute the transfer |
+| executed | `bool` | Whether the transfer has been executed |
+
+<a id="hassignertransfer-uint256-address"></a>
+
+### hasSignerTransfer
+
+Checks if a signer has signed a transfer
+
+```solidity
+function hasSignerTransfer(uint256 _transferId, address _signer) external view returns (bool);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _transferId | `uint256` | The ID of the transfer |
+| _signer | `address` | The address of the signer |
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| &lt;none&gt; | `bool` | hasSigned Whether the signer has signed the transfer |
+
+<a id="gettransfercount"></a>
+
+### getTransferCount
+
+Gets the number of transfers
+
+```solidity
+function getTransferCount() external view returns (uint256);
+```
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| &lt;none&gt; | `uint256` | The number of transfers |
+
+## Events
+
+### TransferInitiated
+
+Emitted when a transfer is initiated
+
+```solidity
+event TransferInitiated(uint256 indexed transferId, address indexed to, uint256 amount);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| transferId | `uint256` | The ID of the transfer |
+| to | `address` | The address of the recipient |
+| amount | `uint256` | The amount of the tokens |
+
+### TransferApproved
+
+Emitted when a transfer is approved
+
+```solidity
+event TransferApproved(uint256 indexed transferId, address indexed approver);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| transferId | `uint256` | The ID of the transfer |
+| approver | `address` | The address of the approver |
+
+### TransferExecuted
+
+Emitted when a transfer is executed
+
+```solidity
+event TransferExecuted(uint256 indexed transferId);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| transferId | `uint256` | The ID of the transfer |
+
+## Errors
+
+### SignersArrayCannotBeEmpty
+
+Checks that the signers array is not empty
+
+```solidity
+error SignersArrayCannotBeEmpty();
+```
+
+### QuorumGreaterThanSigners
+
+Checks that quorum is not greater than number of signers
+
+```solidity
+error QuorumGreaterThanSigners();
+```
+
+### QuorumCannotBeZero
+
+```solidity
+error QuorumCannotBeZero();
+```
+
+### InvalidRecipient
+
+Checks that the recipient is not the zero address
+
+```solidity
+error InvalidRecipient();
+```
+
+### InvalidAmount
+
+Checks that the amount is greater than zero
+
+```solidity
+error InvalidAmount();
+```
+
+### InvalidMultisigSigner
+
+Checks that the signer is a multisig signer
+
+```solidity
+error InvalidMultisigSigner();
+```
+
+### TransferFailed
+
+Checks that transfer is not failed
+
+```solidity
+error TransferFailed(uint256 transferId);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| transferId | `uint256` | The ID of the transfer |
+
+### TransferAlreadyExecuted
+
+Checks that the transfer is not already executed
+
+```solidity
+error TransferAlreadyExecuted(uint256 transferId);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| transferId | `uint256` | The ID of the transfer |
+
+### SignerAlreadyApproved
+
+Checks that the signer is not already approved transfer
+
+```solidity
+error SignerAlreadyApproved(address signer);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| signer | `address` | The address of the signer |
+
+### QuorumHasNotBeReached
+
+Checks that quorum was reached
+
+```solidity
+error QuorumHasNotBeReached(uint256 transferId);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| transferId | `uint256` | The ID of the transfer |
+
+### InsufficientBalance
+
+Checks that the balance is sufficient for the transfer
+
+```solidity
+error InsufficientBalance(uint256 balance, uint256 desiredAmount);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| balance | `uint256` | The balance of current address |
+| desiredAmount | `uint256` | The amount desired to transfer |
+
+## Structs
+
+### Transfer
+
+The struct of a transfer
+
+```solidity
+struct Transfer {
+        address to;
+        uint256 amount;
+        uint256 approvals;
+        bool executed;
+        mapping(address => bool) approved;
+    }
+```
+
+**Properties**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| to | `address` | The address of the recipient |
+| amount | `uint256` | The amount of tokens to transfer |
+| approvals | `uint256` | The number of approvals required to execute the transfer |
+| executed | `bool` | Whether the transfer has been executed |
+| approved | `mapping(address => bool)` | The mapping of signers to their approval status |
+

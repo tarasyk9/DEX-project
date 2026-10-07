@@ -1,0 +1,378 @@
+---
+title: "LiquidityPool"
+description: "Manages liquidity and executes token swaps for a two-token DEX pool"
+---
+
+# LiquidityPool
+
+[Git Source](https://github.com/tarasyk9/DEX-project/blob/65533ada8ce86eea939855b5e7715733e43cbc6f/src/LiquidityPool.sol)
+
+**Inherits:** [ISwap](/src/interface.ISwap), AccessControl, ReentrancyGuard
+
+**Title:** Liquidity Pool
+
+Manages liquidity and executes token swaps for a two-token DEX pool
+
+## State Variables
+
+### token0
+
+Address of the first token in the pool
+
+```solidity
+address public token0;
+```
+
+### token0Decimals
+
+Number of decimals used by token0
+
+```solidity
+uint256 public token0Decimals;
+```
+
+### token1
+
+Address of the second token in the pool
+
+```solidity
+address public token1;
+```
+
+### token1Decimals
+
+Number of decimals used by token1
+
+```solidity
+uint256 public token1Decimals;
+```
+
+### reserveToken0
+
+Current tracked reserve of token0
+
+```solidity
+uint256 public reserveToken0;
+```
+
+### reserveToken1
+
+Current tracked reserve of token1
+
+```solidity
+uint256 public reserveToken1;
+```
+
+### feeManager
+
+Fee manager used to calculate swap fees
+
+```solidity
+FeeManager public feeManager;
+```
+
+### eip712Swap
+
+EIP-712 swap executor associated with this pool
+
+```solidity
+EIP712Swap public eip712Swap;
+```
+
+## Functions
+
+<a id="onlyadminoreip712swap"></a>
+
+### onlyAdminOrEIP712Swap
+
+Restricts swap execution to administrators or authorized EIP-712 executors
+
+```solidity
+modifier onlyAdminOrEIP712Swap();
+```
+
+<a id="constructor-address-uint256-address-uint256-address-address"></a>
+
+### constructor
+
+Initializes a two-token liquidity pool
+
+```solidity
+constructor(
+        address _token0,
+        uint256 _token0Decimals,
+        address _token1,
+        uint256 _token1Decimals,
+        address _feeManager,
+        address _eip712Swap
+    );
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _token0 | `address` | Address of the first ERC-20 token |
+| _token0Decimals | `uint256` | Number of decimals used by token0 |
+| _token1 | `address` | Address of the second ERC-20 token |
+| _token1Decimals | `uint256` | Number of decimals used by token1 |
+| _feeManager | `address` | Address of the FeeManager contract |
+| _eip712Swap | `address` | Address of the authorized EIP712Swap contract |
+
+<a id="addliquidity-address-uint256"></a>
+
+### addLiquidity
+
+Add liquidity to the pool (admin only)
+
+```solidity
+function addLiquidity(address _token, uint256 _amount) external onlyRole(Roles.ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _token | `address` | Address of the token to deposit |
+| _amount | `uint256` | Amount of tokens to deposit |
+
+<a id="removeliquidity-address-uint256"></a>
+
+### removeLiquidity
+
+Remove liquidity from the pool (admin only)
+
+```solidity
+function removeLiquidity(address _token, uint256 _amount) external onlyRole(Roles.ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _token | `address` | Address of the token to withdraw |
+| _amount | `uint256` | Amount of tokens to withdraw |
+
+<a id="grantswaprole-address"></a>
+
+### grantSwapRole
+
+Grants permission to execute swaps through the pool
+
+Grant EIP712 swap permission to an address
+
+```solidity
+function grantSwapRole(address _swapper) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _swapper | `address` | Address that will receive the EIP-712 swap role |
+
+<a id="revokeswaprole-address"></a>
+
+### revokeSwapRole
+
+Revoke EIP712 swap permission from an address
+
+```solidity
+function revokeSwapRole(address _swapper) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _swapper | `address` |  |
+
+<a id="getreserves"></a>
+
+### getReserves
+
+Returns the currently tracked token reserves
+
+```solidity
+function getReserves() external view returns (uint256 _reserveToken0, uint256 _reserveToken1);
+```
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _reserveToken0 | `uint256` | Current reserve of token0 |
+| _reserveToken1 | `uint256` | Current reserve of token1 |
+
+<a id="getprice-address-address"></a>
+
+### getPrice
+
+Returns the spot price between two pool reserves
+
+```solidity
+function getPrice(address _tokenIn, address _tokenOut) external view returns (uint256 _price);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _tokenIn | `address` | Token used as the price denominator |
+| _tokenOut | `address` | Token used as the price numerator |
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _price | `uint256` | Current reserve-based price scaled by 1e18 |
+
+<a id="swap-address-address-address-uint256-uint256"></a>
+
+### swap
+
+Executes a token swap using the pool's current reserves
+
+```solidity
+function swap(address _sender, address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _minAmountOut)
+        external
+        nonReentrant
+        onlyAdminOrEIP712Swap;
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _sender | `address` | Address supplying the input tokens and receiving output tokens |
+| _tokenIn | `address` | Address of the input token |
+| _tokenOut | `address` | Address of the output token |
+| _amountIn | `uint256` | Amount of input tokens to swap |
+| _minAmountOut | `uint256` | Minimum output amount accepted by the sender |
+
+## Events
+
+### LiquidityAdded
+
+Emitted when liquidity is added to the pool
+
+```solidity
+event LiquidityAdded(address indexed _token, uint256 _amount);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _token | `address` | Address of the deposited token |
+| _amount | `uint256` | Amount of tokens deposited |
+
+### Swap
+
+Emitted after a successful token swap
+
+```solidity
+event Swap(address indexed _tokenIn, address indexed _tokenOut, uint256 _amountIn, uint256 _amountOut);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _tokenIn | `address` | Address of the input token |
+| _tokenOut | `address` | Address of the output token |
+| _amountIn | `uint256` | Amount of input tokens supplied |
+| _amountOut | `uint256` | Amount of output tokens received |
+
+## Errors
+
+### InsufficientReserves
+
+Thrown when pool does not have enough tokens
+
+```solidity
+error InsufficientReserves();
+```
+
+### InsufficientTokenBalance
+
+Thrown when an account does not have enough tokens
+
+```solidity
+error InsufficientTokenBalance();
+```
+
+### UnauthorizedSwapCaller
+
+Thrown when an unauthorized address attempts to execute a swap
+
+```solidity
+error UnauthorizedSwapCaller(address caller);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| caller | `address` | Address that attempted to execute the swap |
+
+### InvalidTokenAddress
+
+Thrown when a token does not belong to this liquidity pool
+
+```solidity
+error InvalidTokenAddress(address _token);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _token | `address` | Invalid token address |
+
+### InvalidTokenPair
+
+Thrown when an invalid input/output token pair is supplied
+
+```solidity
+error InvalidTokenPair(address _tokenIn, address _tokenOut);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _tokenIn | `address` | Requested input token |
+| _tokenOut | `address` | Requested output token |
+
+### InsufficientLiquidity
+
+Thrown when the pool does not contain sufficient liquidity for a swap
+
+```solidity
+error InsufficientLiquidity();
+```
+
+### InsufficientOutputAmount
+
+Thrown when calculated output is below the user's minimum acceptable amount
+
+```solidity
+error InsufficientOutputAmount(uint256 expected, uint256 actual);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| expected | `uint256` | Minimum output amount requested by the user |
+| actual | `uint256` | Actual output amount calculated by the pool |
+
+### InsufficientAllowance
+
+Thrown when the pool does not have sufficient token allowance
+
+```solidity
+error InsufficientAllowance();
+```
+

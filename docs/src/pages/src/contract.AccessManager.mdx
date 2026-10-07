@@ -1,0 +1,196 @@
+---
+title: "AccessManager"
+description: "Role management contract for the DEX protocol"
+---
+
+# AccessManager
+
+[Git Source](https://github.com/tarasyk9/DEX-project/blob/65533ada8ce86eea939855b5e7715733e43cbc6f/src/AccessManager.sol)
+
+**Inherits:** AccessControl
+
+**Title:** Access Manager
+
+Role management contract for the DEX protocol
+
+<i>
+
+Uses OpenZeppelin AccessControl to manage administrator,
+multisig administrator, and EIP-712 swapper roles.
+
+</i>
+
+## Functions
+
+<a id="constructor"></a>
+
+### constructor
+
+Initializes the access manager
+
+```solidity
+constructor();
+```
+
+<a id="addadmin-address"></a>
+
+### addAdmin
+
+Grants the protocol administrator role to an account
+
+```solidity
+function addAdmin(address _admin) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _admin | `address` | Address that will receive the administrator role |
+
+<a id="removeadmin-address"></a>
+
+### removeAdmin
+
+Revokes the protocol administrator role from an account
+
+```solidity
+function removeAdmin(address _admin) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _admin | `address` | Address from which the administrator role will be revoked |
+
+<a id="addmultisigadmin-address"></a>
+
+### addMultisigAdmin
+
+Grants the multisig administrator role to an account
+
+```solidity
+function addMultisigAdmin(address _multisigAdmin) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _multisigAdmin | `address` | Address that will receive the multisig administrator role |
+
+<a id="removemultisigadmin-address"></a>
+
+### removeMultisigAdmin
+
+Revokes the multisig administrator role from an account
+
+```solidity
+function removeMultisigAdmin(address _multisigAdmin) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _multisigAdmin | `address` | Address from which the multisig administrator role will be revoked |
+
+<a id="addeip712swapper-address"></a>
+
+### addEIP712Swapper
+
+Grants permission to execute EIP-712 based swaps
+
+```solidity
+function addEIP712Swapper(address _swapper) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _swapper | `address` | Address that will receive the EIP-712 swap role |
+
+<a id="removeeip712swapper-address"></a>
+
+### removeEIP712Swapper
+
+Revokes permission to execute EIP-712 based swaps
+
+```solidity
+function removeEIP712Swapper(address _swapper) external onlyRole(DEFAULT_ADMIN_ROLE);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _swapper | `address` | Address from which the EIP-712 swap role will be revoked |
+
+<a id="isadmin-address"></a>
+
+### isAdmin
+
+Checks whether an account has the administrator role
+
+```solidity
+function isAdmin(address _address) external view returns (bool);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _address | `address` | Address to check |
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| &lt;none&gt; | `bool` | True if the address has ADMIN_ROLE |
+
+<a id="ismultisigadmin-address"></a>
+
+### isMultisigAdmin
+
+Checks whether an account has the multisig administrator role
+
+```solidity
+function isMultisigAdmin(address _address) external view returns (bool);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _address | `address` | Address to check |
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| &lt;none&gt; | `bool` | True if the address has MULTISIG_ADMIN_ROLE |
+
+<a id="iseip712swapper-address"></a>
+
+### isEIP712Swapper
+
+Checks whether an account can execute EIP-712 swaps
+
+```solidity
+function isEIP712Swapper(address _address) external view returns (bool);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| _address | `address` | Address to check |
+
+**Returns**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| &lt;none&gt; | `bool` | True if the address has ALLOWED_EIP712_SWAP_ROLE |
+

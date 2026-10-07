@@ -1,0 +1,64 @@
+---
+title: "ISwap"
+---
+
+# ISwap
+
+[Git Source](https://github.com/tarasyk9/DEX-project/blob/65533ada8ce86eea939855b5e7715733e43cbc6f/src/ISwap.sol)
+
+## Structs
+
+### SwapParams
+
+Parameters for the swap
+
+```solidity
+struct SwapParams {
+        address token0;
+        address token1;
+        uint256 amount0;
+        uint256 reserveToken0;
+        uint256 reserveToken1;
+    }
+```
+
+**Properties**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| token0 | `address` | The address of the first token |
+| token1 | `address` | The address of the second token |
+| amount0 | `uint256` | The amount of the first token to swap |
+| reserveToken0 | `uint256` | The reserve of the first token |
+| reserveToken1 | `uint256` | The reserve of the second token |
+
+### SwapRequest
+
+Parameters for the swap request
+
+```solidity
+struct SwapRequest {
+        address pool;
+        address sender;
+        address tokenIn;
+        address tokenOut;
+        uint256 amountIn;
+        uint256 minAmountOut;
+        uint256 nonce;
+        uint256 deadline;
+    }
+```
+
+**Properties**
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| pool | `address` | The address of the pool |
+| sender | `address` | The address of the sender |
+| tokenIn | `address` | The address of the token to swap in |
+| tokenOut | `address` | The address of the token to swap out |
+| amountIn | `uint256` | The amount of the token to swap in |
+| minAmountOut | `uint256` | The minimum amount of the token to swap out |
+| nonce | `uint256` | The nonce of the swap |
+| deadline | `uint256` | The deadline of the swap |
+
