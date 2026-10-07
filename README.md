@@ -3,6 +3,8 @@
 A decentralized exchange implemented in Solidity using
 a constant-product AMM (x * y = k).
 
+📚 [Documentation](https://tarasyk9.github.io/DEX-project/)
+
 ## Features
 
 - ERC20 token swaps
