@@ -10,7 +10,6 @@ import "./ISwap.sol";
 /// @notice Manages and calculates swap fees for the DEX
 /// @dev Uses UUPS upgradeability and OpenZeppelin role-based access control
 contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable {
-
     /// @notice Denominator used for basis point calculations
     /// @dev 10,000 represents 100%, therefore 100 represents 1%
     uint256 public constant FEE_DENOMINATOR = 10_000;
@@ -37,7 +36,7 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
     function initialize(uint256 _fee) external initializer {
         if (_fee > FEE_DENOMINATOR) {
             revert FeeGreaterThanDenominator();
-    }
+        }
         __AccessControl_init();
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -48,18 +47,11 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
     /// @notice Authorizes an upgrade to a new implementation contract
     /// @dev Required by the UUPS upgrade pattern.
     /// @param newImplementation Address of the new implementation contract
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        override
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 
     /// @notice Updates the swap fee
     /// @param _fee New swap fee expressed in basis points
-    function setFee(uint256 _fee)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setFee(uint256 _fee) external onlyRole(DEFAULT_ADMIN_ROLE) {
         if (_fee > FEE_DENOMINATOR) {
             revert FeeGreaterThanDenominator();
         }
@@ -73,14 +65,9 @@ contract FeeManager is Initializable, AccessControlUpgradeable, UUPSUpgradeable 
     /// @notice Calculates the absolute fee amount for a swap
     /// @param swapParams Swap parameters containing the input amount and current pool reserves
     /// @return feeAmount Fee amount denominated in the output token
-    function getFee(ISwap.SwapParams memory swapParams)
-        external
-        view
-        returns (uint256 feeAmount)
-    {
+    function getFee(ISwap.SwapParams memory swapParams) external view returns (uint256 feeAmount) {
         uint256 amountOut =
-            (swapParams.amount0 * swapParams.reserveToken1)
-                / (swapParams.reserveToken0 + swapParams.amount0);
+            (swapParams.amount0 * swapParams.reserveToken1) / (swapParams.reserveToken0 + swapParams.amount0);
 
         feeAmount = (amountOut * fee) / FEE_DENOMINATOR;
     }

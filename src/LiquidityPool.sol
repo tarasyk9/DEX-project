@@ -50,22 +50,14 @@ contract LiquidityPool is ISwap, AccessControl, ReentrancyGuard {
     /// @notice Emitted when liquidity is added to the pool
     /// @param _token Address of the deposited token
     /// @param _amount Amount of tokens deposited
-    event LiquidityAdded(
-        address indexed _token,
-        uint256 _amount
-    );
+    event LiquidityAdded(address indexed _token, uint256 _amount);
 
     /// @notice Emitted after a successful token swap
     /// @param _tokenIn Address of the input token
     /// @param _tokenOut Address of the output token
     /// @param _amountIn Amount of input tokens supplied
     /// @param _amountOut Amount of output tokens received
-    event Swap(
-        address indexed _tokenIn,
-        address indexed _tokenOut,
-        uint256 _amountIn,
-        uint256 _amountOut
-    );
+    event Swap(address indexed _tokenIn, address indexed _tokenOut, uint256 _amountIn, uint256 _amountOut);
 
     /// @notice Thrown when pool does not have enough tokens
     error InsufficientReserves();
@@ -92,10 +84,7 @@ contract LiquidityPool is ISwap, AccessControl, ReentrancyGuard {
     /// @notice Thrown when calculated output is below the user's minimum acceptable amount
     /// @param expected Minimum output amount requested by the user
     /// @param actual Actual output amount calculated by the pool
-    error InsufficientOutputAmount(
-        uint256 expected,
-        uint256 actual
-    );
+    error InsufficientOutputAmount(uint256 expected, uint256 actual);
 
     /// @notice Thrown when the pool does not have sufficient token allowance
     error InsufficientAllowance();
@@ -127,21 +116,12 @@ contract LiquidityPool is ISwap, AccessControl, ReentrancyGuard {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(Roles.ADMIN_ROLE, msg.sender);
 
-        _grantRole(
-            Roles.ALLOWED_EIP712_SWAP_ROLE,
-            _eip712Swap
-        );
+        _grantRole(Roles.ALLOWED_EIP712_SWAP_ROLE, _eip712Swap);
 
         // Configure role hierarchy.
-        _setRoleAdmin(
-            Roles.ADMIN_ROLE,
-            DEFAULT_ADMIN_ROLE
-        );
+        _setRoleAdmin(Roles.ADMIN_ROLE, DEFAULT_ADMIN_ROLE);
 
-        _setRoleAdmin(
-            Roles.ALLOWED_EIP712_SWAP_ROLE,
-            DEFAULT_ADMIN_ROLE
-        );
+        _setRoleAdmin(Roles.ALLOWED_EIP712_SWAP_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
     /// @notice Add liquidity to the pool (admin only)
@@ -211,8 +191,7 @@ contract LiquidityPool is ISwap, AccessControl, ReentrancyGuard {
     /// @param _tokenIn Token used as the price denominator
     /// @param _tokenOut Token used as the price numerator
     /// @return _price Current reserve-based price scaled by 1e18
-     function getPrice(address _tokenIn, address _tokenOut) external view returns (uint256 _price) {
-
+    function getPrice(address _tokenIn, address _tokenOut) external view returns (uint256 _price) {
         uint256 _reserveTokenIn = _tokenIn == token0 ? reserveToken0 : reserveToken1;
         uint256 _reserveTokenOut = _tokenOut == token0 ? reserveToken0 : reserveToken1;
 

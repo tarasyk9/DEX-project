@@ -4,7 +4,6 @@ pragma solidity ^0.8.30;
 /// @title Roles
 /// @notice Defines role identifiers used for access control across the DEX contracts
 library Roles {
-
     /// @notice Role assigned to protocol administrators
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
