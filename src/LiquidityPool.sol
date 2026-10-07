@@ -3,6 +3,7 @@ pragma solidity ^0.8.30;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./ISwap.sol";
 import "./FeeManager.sol";
 import "./EIP712Swap.sol";
@@ -10,7 +11,7 @@ import "./Roles.sol";
 
 /// @title Liquidity Pool
 /// @notice Manages liquidity and executes token swaps for a two-token DEX pool
-contract LiquidityPool is ISwap, AccessControl {
+contract LiquidityPool is ISwap, AccessControl, ReentrancyGuard {
     using Roles for bytes32;
 
     /// @notice Address of the first token in the pool
@@ -230,6 +231,7 @@ contract LiquidityPool is ISwap, AccessControl {
     /// @param _minAmountOut Minimum output amount accepted by the sender
     function swap(address _sender, address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _minAmountOut)
         external
+        nonReentrant
         onlyAdminOrEIP712Swap
     {
         if (
