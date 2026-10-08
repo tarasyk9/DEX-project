@@ -228,7 +228,6 @@ contract LiquidityPool is ISwap, AccessControl, ReentrancyGuard {
         uint256 _reserveTokenOut = _tokenOut == token0 ? reserveToken0 : reserveToken1;
 
         if (_reserveTokenIn == 0 || _reserveTokenOut == 0) revert InsufficientLiquidity();
-        if (_amountIn >= _reserveTokenIn) revert InsufficientLiquidity();
 
         // AMM calculation
         uint256 amountOut = (_amountIn * _reserveTokenOut) / (_reserveTokenIn + _amountIn);
@@ -245,6 +244,10 @@ contract LiquidityPool is ISwap, AccessControl, ReentrancyGuard {
         amountOut = amountOut > feeAmount ? amountOut - feeAmount : 0;
 
         if (amountOut < _minAmountOut) revert InsufficientOutputAmount(_minAmountOut, amountOut);
+
+        if (amountOut >= _reserveTokenOut) {
+            revert InsufficientLiquidity();
+        }
 
         if (_tokenIn == token0) {
             reserveToken0 += _amountIn;
