@@ -38,29 +38,25 @@ contract FeeManagerTest is Test {
         feeManager.setFee(500);
     }
 
-function test_GetFee() public view {
-    ISwap.SwapParams memory params = ISwap.SwapParams({
-        token0: address(0x1),
-        token1: address(0x2),
-        amount0: 1000e18,
-        reserveToken0: 10000e18,
-        reserveToken1: 20000e6
-    });
+    function test_GetFee() public view {
+        ISwap.SwapParams memory params = ISwap.SwapParams({
+            token0: address(0x1),
+            token1: address(0x2),
+            amount0: 1000e18,
+            reserveToken0: 10000e18,
+            reserveToken1: 20000e6
+        });
 
-    uint256 amountOut =
-        (params.amount0 * params.reserveToken1) /
-        (params.reserveToken0 + params.amount0);
+        uint256 amountOut = (params.amount0 * params.reserveToken1) / (params.reserveToken0 + params.amount0);
 
-    uint256 expectedFee =
-        (amountOut * feeManager.fee()) /
-        feeManager.FEE_DENOMINATOR();
+        uint256 expectedFee = (amountOut * feeManager.fee()) / feeManager.FEE_DENOMINATOR();
 
-    uint256 actualFee = feeManager.getFee(params);
+        uint256 actualFee = feeManager.getFee(params);
 
-    assertEq(actualFee, expectedFee);
-    assertGt(actualFee, 0);
-    assertLt(actualFee, amountOut);
-}
+        assertEq(actualFee, expectedFee);
+        assertGt(actualFee, 0);
+        assertLt(actualFee, amountOut);
+    }
 
     function test_GetFee_WithDifferentAmounts() public view {
         ISwap.SwapParams memory params = ISwap.SwapParams({

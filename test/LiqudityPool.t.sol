@@ -95,7 +95,6 @@ contract LiquidityPoolTest is Test {
     }
 
     function test_EIP712SwapCanExecuteSwap() public {
-
         pool.addLiquidity(address(token0), 10000e18);
         pool.addLiquidity(address(token1), 20000e6);
 
